@@ -1,0 +1,12 @@
+timestamp,waste_type,confidence,location
+2026-04-16 21:49:59,other_waste,90.0,Connaught Place
+2026-04-23 20:51:47,wet_waste,98.8,Unknown
+2026-04-23 20:59:21,wet_waste,92.7,Unknown
+2026-04-23 21:01:52,wet_waste,79.6,Unknown
+2026-04-23 21:02:28,dry_waste,95.1,Unknown
+2026-04-23 21:02:59,other_waste,93.4,Unknown
+2026-04-23 21:03:32,dry_waste,82.1,Unknown
+2026-05-24 16:56:54,dry_waste,68.1,Test Location
+2026-05-24 17:05:51,dry_waste,55.4,Unknown
+2026-05-24 17:20:22,dry_waste,55.4,Unknown
+2026-05-24 17:26:21,other_waste,89.4,Unknown

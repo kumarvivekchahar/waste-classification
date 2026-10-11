@@ -1,0 +1,32 @@
+timestamp,waste_type,confidence,location
+2026-03-20 19:57:54,wet_waste,50.7,"Mumbai, Ward 5"
+2026-03-20 20:02:30,other_waste,91.0,Unknown
+2026-03-20 20:03:22,wet_waste,92.3,Unknown
+2026-03-20 23:35:16,dry_waste,76.7,Unknown
+2026-03-21 19:09:53,wet_waste,92.3,Unknown
+2026-03-25 23:03:47,dry_waste,90.3,Unknown
+2026-03-25 23:03:58,dry_waste,90.3,Unknown
+2026-03-27 18:37:52,dry_waste,95.6,Unknown
+2026-03-28 11:28:26,dry_waste,95.6,Unknown
+2026-03-28 12:01:04,dry_waste,86.2,Unknown
+2026-03-28 12:01:35,wet_waste,97.7,Unknown
+2026-03-28 12:01:57,wet_waste,99.2,Unknown
+2026-03-28 12:02:31,other_waste,87.1,Unknown
+2026-03-28 13:37:12,wet_waste,82.3,Unknown
+2026-03-28 13:37:45,dry_waste,99.2,Unknown
+2026-04-03 22:54:41,other_waste,92.2,Unknown
+2026-04-04 12:02:24,dry_waste,95.6,Unknown
+2026-04-11 12:07:23,unknown,0.0,Unknown
+2026-09-02 21:08:30,other_waste,96.2,Unknown
+2026-09-02 21:12:14,other_waste,65.6,Unknown
+2026-09-02 21:13:19,dry_waste,92.8,Unknown
+2026-09-02 21:13:40,wet_waste,67.5,Unknown
+2026-09-02 21:13:57,wet_waste,93.2,Unknown
+2026-09-02 21:14:07,wet_waste,92.7,Unknown
+2026-09-02 21:14:17,dry_waste,99.2,Unknown
+2026-09-02 21:14:27,wet_waste,67.5,Unknown
+2026-09-02 21:15:47,dry_waste,71.8,Unknown
+2026-09-02 21:16:10,other_waste,45.5,Unknown
+2026-10-11 21:28:05,dry_waste,68.1,Hyderabad
+2026-10-11 22:00:38,other_waste,93.4,Unknown
+2026-10-11 22:10:36,dry_waste,68.1,Gachibowli

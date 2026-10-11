@@ -1,0 +1,202 @@
+[
+  {
+    "bin_id": "BIN-001",
+    "area": "Gachibowli",
+    "lat": 17.4401,
+    "lng": 78.3489,
+    "fill_level": 92,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:10:36"
+  },
+  {
+    "bin_id": "BIN-002",
+    "area": "Hitech City",
+    "lat": 17.4435,
+    "lng": 78.3772,
+    "fill_level": 64,
+    "waste_type": "other_waste",
+    "priority": "MEDIUM",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-003",
+    "area": "Banjara Hills",
+    "lat": 17.4156,
+    "lng": 78.4342,
+    "fill_level": 76,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-004",
+    "area": "Jubilee Hills",
+    "lat": 17.4324,
+    "lng": 78.407,
+    "fill_level": 68,
+    "waste_type": "wet_waste",
+    "priority": "MEDIUM",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-005",
+    "area": "Kukatpally",
+    "lat": 17.4948,
+    "lng": 78.3996,
+    "fill_level": 77,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-006",
+    "area": "Madhapur",
+    "lat": 17.4504,
+    "lng": 78.3884,
+    "fill_level": 37,
+    "waste_type": "dry_waste",
+    "priority": "LOW",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-007",
+    "area": "Secunderabad",
+    "lat": 17.4399,
+    "lng": 78.4983,
+    "fill_level": 31,
+    "waste_type": "wet_waste",
+    "priority": "LOW",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-008",
+    "area": "Kondapur",
+    "lat": 17.4699,
+    "lng": 78.3576,
+    "fill_level": 81,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-009",
+    "area": "Begumpet",
+    "lat": 17.4447,
+    "lng": 78.4677,
+    "fill_level": 97,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-010",
+    "area": "Somajiguda",
+    "lat": 17.4284,
+    "lng": 78.4567,
+    "fill_level": 56,
+    "waste_type": "wet_waste",
+    "priority": "MEDIUM",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-011",
+    "area": "Ameerpet",
+    "lat": 17.4375,
+    "lng": 78.4483,
+    "fill_level": 36,
+    "waste_type": "other_waste",
+    "priority": "LOW",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-012",
+    "area": "Dilsukhnagar",
+    "lat": 17.3688,
+    "lng": 78.5247,
+    "fill_level": 90,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-013",
+    "area": "Tarnaka",
+    "lat": 17.4274,
+    "lng": 78.5411,
+    "fill_level": 81,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-014",
+    "area": "Uppal",
+    "lat": 17.3994,
+    "lng": 78.5583,
+    "fill_level": 78,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-015",
+    "area": "Malkajgiri",
+    "lat": 17.4478,
+    "lng": 78.5263,
+    "fill_level": 100,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-016",
+    "area": "Mehdipatnam",
+    "lat": 17.3919,
+    "lng": 78.4375,
+    "fill_level": 86,
+    "waste_type": "dry_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-017",
+    "area": "Abids",
+    "lat": 17.3894,
+    "lng": 78.4761,
+    "fill_level": 93,
+    "waste_type": "other_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-018",
+    "area": "Nampally",
+    "lat": 17.3864,
+    "lng": 78.4736,
+    "fill_level": 61,
+    "waste_type": "other_waste",
+    "priority": "MEDIUM",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-019",
+    "area": "Charminar",
+    "lat": 17.3616,
+    "lng": 78.4747,
+    "fill_level": 55,
+    "waste_type": "other_waste",
+    "priority": "MEDIUM",
+    "last_updated": "2026-10-11 22:00:49"
+  },
+  {
+    "bin_id": "BIN-020",
+    "area": "Himayatnagar",
+    "lat": 17.4028,
+    "lng": 78.4847,
+    "fill_level": 71,
+    "waste_type": "other_waste",
+    "priority": "HIGH",
+    "last_updated": "2026-10-11 22:00:49"
+  }
+]

@@ -1,0 +1,14 @@
+.venv/
+venv/
+**/venv/
+**/__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+uploads/
+**/uploads/
+backend/ml_training/train/
+backend/ml_training/test/
+backend/.git-backup/
+backend-backup.bundle

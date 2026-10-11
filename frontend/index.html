@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Glacier Farm — AI-Powered Circular Waste Intelligence</title>
+    <meta name="description" content="AI-powered waste classification, smart bin monitoring, route optimization, and analytics for sustainable cities.">
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- Leaflet.js -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌿%3C/text%3E%3C/svg%3E">
+
+    <!-- Tailwind Config (Glacier Kinetic Design Tokens) -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background": "#131313",
+                        "on-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "surface-container-high": "#2a2a2a",
+                        "tertiary-fixed-dim": "#92ccff",
+                        "outline": "#98907a",
+                        "secondary-fixed-dim": "#4ae183",
+                        "surface": "#131313",
+                        "primary-container": "#f4d03f",
+                        "primary": "#ffeebb",
+                        "surface-container-low": "#1c1b1b",
+                        "error": "#ffb4ab",
+                        "on-primary-container": "#6c5900",
+                        "outline-variant": "#4c4634",
+                        "primary-fixed-dim": "#e7c433",
+                        "surface-container": "#201f1f",
+                        "surface-container-highest": "#353534",
+                        "secondary": "#4ae183",
+                        "on-surface-variant": "#cfc6ae",
+                        "surface-variant": "#353534",
+                        "surface-container-lowest": "#0e0e0e",
+                        "tertiary-container": "#acd7ff",
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                        lg: "2rem",
+                        xl: "3rem",
+                        full: "9999px"
+                    },
+                    fontFamily: {
+                        headline: ["Space Grotesk"],
+                        body: ["Inter"],
+                        label: ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Mesh Gradient Background */
+        .mesh-gradient {
+            background:
+                radial-gradient(at 0% 0%, rgba(244, 208, 63, 0.06) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(52, 152, 219, 0.04) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(155, 89, 182, 0.03) 0px, transparent 50%);
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(53, 53, 52, 0.4);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(152, 144, 122, 0.15);
+        }
+
+        /* Upload dashed border */
+        .dashed-neon {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='48' ry='48' stroke='%23F4D03F66' stroke-width='3' stroke-dasharray='12%2c 16' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        }
+
+        /* Neon pulse glow */
+        .neon-pulse {
+            box-shadow: 0 0 15px rgba(244, 208, 63, 0.3);
+        }
+        .neon-glow-green {
+            box-shadow: 0 0 15px rgba(74, 225, 131, 0.4);
+        }
+
+        /* Route polyline glow */
+        .route-line {
+            filter: drop-shadow(0 0 8px #9B59B6);
+        }
+
+        /* Pulse animation for status dots */
+        .pulse-secondary {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+
+        /* Tab panels */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Map tab needs flex layout */
+        #tab-map.active { display: flex; flex-direction: column; }
+
+        /* Smooth transitions */
+        .nav-link { transition: all 0.3s ease-out; }
+
+        /* Hide file input */
+        #file-input { display: none; }
+
+        /* Image result */
+        .result-image { border-radius: 1rem; max-width: 100%; }
+
+        /* Leaflet map fix */
+        .leaflet-container { background: #0e0e0e !important; }
+
+        /* Spinner */
+        .spinner-sm {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #353534; border-radius: 3px; }
+
+        body { min-height: 100dvh; }
+    </style>
+</head>
+
+<body class="bg-background text-on-surface font-body min-h-screen selection:bg-primary-container selection:text-on-primary-container mesh-gradient overflow-x-hidden">
+
+<!-- ═══════════════════════════════════════════
+     TOP APP BAR
+     ═══════════════════════════════════════════ -->
+<header class="flex justify-between items-center px-6 py-4 w-full sticky top-0 z-50 bg-[#131313]/40 backdrop-blur-2xl bg-gradient-to-b from-[#131313] to-transparent">
+    <div class="flex items-center gap-3">
+        <span class="text-xl font-bold text-[#F4D03F] tracking-tighter font-headline">Glacier Farm</span>
+    </div>
+    <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-high/60 backdrop-blur-md">
+            <div class="w-2 h-2 rounded-full bg-secondary pulse-secondary"></div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-secondary">System Live</span>
+        </div>
+        <button class="text-[#F4D03F] hover:opacity-80 transition-opacity p-1">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+    </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT (4 TAB PANELS)
+     ═══════════════════════════════════════════ -->
+
+<!-- ────────────────────────────────────────────
+     TAB 1: DASHBOARD
+     ──────────────────────────────────────────── -->
+<section class="tab-panel active" id="tab-dashboard">
+    <main class="px-6 pb-32 pt-4 max-w-7xl mx-auto space-y-8">
+
+        <!-- Hero -->
+        <section class="relative">
+            <h1 class="font-headline text-[3rem] md:text-[3.5rem] font-bold leading-[0.9] tracking-tight text-on-surface mb-2">
+                Digital <span class="text-primary-container">Glacier</span>
+            </h1>
+            <p class="text-on-surface-variant max-w-md text-lg leading-relaxed">
+                Cultivating recycled potential through high-precision AI diagnostics and sustainable logistics.
+            </p>
+        </section>
+
+        <!-- KPI Bento Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6" id="dashboard-kpi">
+            <!-- Total Scans -->
+            <div class="glass-card rounded-xl p-8 flex flex-col justify-between overflow-hidden relative group">
+                <div class="absolute -right-4 -top-4 text-primary-container/10 group-hover:text-primary-container/20 transition-colors">
+                    <span class="material-symbols-outlined text-8xl">qr_code_scanner</span>
+                </div>
+                <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Total Scans</span>
+                <div class="mt-4">
+                    <span class="font-headline text-5xl font-bold text-primary-container" id="kpi-total-scans">0</span>
+                    <div class="flex items-center gap-1 mt-2 text-secondary font-bold text-sm" id="kpi-scans-trend">
+                        <span class="material-symbols-outlined text-sm">trending_up</span>
+                        <span>—</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Avg Confidence -->
+            <div class="glass-card rounded-xl p-8 flex flex-col justify-between overflow-hidden relative group">
+                <div class="absolute -right-4 -top-4 text-tertiary-fixed-dim/10 group-hover:text-tertiary-fixed-dim/20 transition-colors">
+                    <span class="material-symbols-outlined text-8xl">verified</span>
+                </div>
+                <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Avg Confidence</span>
+                <div class="mt-4">
+                    <span class="font-headline text-5xl font-bold text-tertiary-fixed-dim" id="kpi-avg-conf">—</span>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                            <div class="h-full bg-tertiary-fixed-dim transition-all duration-700" id="kpi-conf-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Active Bins -->
+            <div class="glass-card rounded-xl p-8 flex flex-col justify-between overflow-hidden relative group">
+                <div class="absolute -right-4 -top-4 text-secondary/10 group-hover:text-secondary/20 transition-colors">
+                    <span class="material-symbols-outlined text-8xl">delete_sweep</span>
+                </div>
+                <span class="font-label text-xs uppercase tracking-widest text-on-surface-variant">Active Bins</span>
+                <div class="mt-4">
+                    <div class="flex items-baseline gap-2">
+                        <span class="font-headline text-5xl font-bold text-secondary" id="kpi-active-bins">0</span>
+                        <span class="text-on-surface-variant font-headline text-2xl" id="kpi-total-bins">/ 0</span>
+                    </div>
+                    <div class="flex items-center gap-2 mt-2 text-secondary/80 text-sm font-bold">
+                        <div class="w-2 h-2 rounded-full bg-secondary pulse-secondary"></div>
+                        <span>Real-time Syncing</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Waste Distribution + Trends -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Waste Distribution Donut -->
+            <div class="glass-card rounded-xl p-8">
+                <div class="flex justify-between items-center mb-10">
+                    <h2 class="font-headline text-xl font-medium">Waste Distribution</h2>
+                    <span class="material-symbols-outlined text-on-surface-variant">pie_chart</span>
+                </div>
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="relative w-48 h-48">
+                        <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36" id="donut-svg">
+                            <circle class="stroke-surface-container-highest" cx="18" cy="18" fill="none" r="16" stroke-width="3"></circle>
+                            <circle id="donut-seg-dry" class="stroke-primary-container transition-all duration-700" cx="18" cy="18" fill="none" r="16" stroke-dasharray="0, 100" stroke-linecap="round" stroke-width="3"></circle>
+                            <circle id="donut-seg-wet" class="stroke-secondary transition-all duration-700" cx="18" cy="18" fill="none" r="16" stroke-dasharray="0, 100" stroke-dashoffset="0" stroke-linecap="round" stroke-width="3"></circle>
+                            <circle id="donut-seg-other" class="stroke-tertiary-fixed-dim transition-all duration-700" cx="18" cy="18" fill="none" r="16" stroke-dasharray="0, 100" stroke-dashoffset="0" stroke-linecap="round" stroke-width="3"></circle>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="text-xs uppercase font-label text-on-surface-variant">Global</span>
+                            <span class="text-2xl font-bold font-headline">100%</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 space-y-4 w-full" id="donut-legend">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full bg-primary-container"></div><span class="text-on-surface font-medium">Dry Waste</span></div>
+                            <span class="font-bold" id="legend-dry">0%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full bg-secondary"></div><span class="text-on-surface font-medium">Wet Waste</span></div>
+                            <span class="font-bold" id="legend-wet">0%</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3"><div class="w-3 h-3 rounded-full bg-tertiary-fixed-dim"></div><span class="text-on-surface font-medium">Other</span></div>
+                            <span class="font-bold" id="legend-other">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Waste Trends -->
+            <div class="glass-card rounded-xl p-8">
+                <div class="flex justify-between items-center mb-10">
+                    <h2 class="font-headline text-xl font-medium">Waste Trends</h2>
+                    <span class="px-3 py-1 bg-primary-container/10 text-primary-container text-[10px] font-bold rounded-full uppercase tracking-tighter">Weekly</span>
+                </div>
+                <div class="h-48 w-full flex items-end justify-between gap-2" id="trends-bars">
+                    <!-- Populated by JS -->
+                    <div class="flex-1 bg-primary-container/20 rounded-t-lg" style="height: 30%"></div>
+                    <div class="flex-1 bg-primary-container/20 rounded-t-lg" style="height: 45%"></div>
+                    <div class="flex-1 bg-primary-container/20 rounded-t-lg" style="height: 35%"></div>
+                    <div class="flex-1 bg-primary-container/20 rounded-t-lg" style="height: 60%"></div>
+                    <div class="flex-1 bg-primary-container/20 rounded-t-lg" style="height: 55%"></div>
+                    <div class="flex-1 bg-primary-container/20 rounded-t-lg" style="height: 75%"></div>
+                    <div class="flex-1 bg-primary-container/40 rounded-t-lg" style="height: 90%"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">
+                    <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Scans Feed -->
+        <section class="glass-card rounded-xl p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-headline text-xl font-medium">Recent Scans</h2>
+                <button class="text-primary-container text-xs font-bold uppercase tracking-widest hover:underline" onclick="switchTab('scan')">View All</button>
+            </div>
+            <div class="space-y-2 overflow-y-auto max-h-[400px] pr-2" id="dashboard-recent-scans">
+                <div class="text-center py-8 text-on-surface-variant">Loading...</div>
+            </div>
+        </section>
+    </main>
+</section>
+
+<!-- ────────────────────────────────────────────
+     TAB 2: SCAN (AI Waste Classification)
+     ──────────────────────────────────────────── -->
+<section class="tab-panel" id="tab-scan">
+    <main class="max-w-2xl mx-auto px-6 py-8 space-y-10 pb-32">
+        <!-- Header -->
+        <section class="space-y-2">
+            <span class="text-secondary font-label text-[10px] tracking-[0.2em] uppercase">Artificial Intelligence Scanner</span>
+            <h2 class="text-4xl font-headline font-bold tracking-tight text-on-surface">Cultivate <span class="text-primary-container">Purity.</span></h2>
+        </section>
+
+        <!-- Upload Area -->
+        <div id="upload-zone" class="relative min-h-[280px] rounded-xl flex flex-col items-center justify-center dashed-neon hover:bg-primary-container/5 transition-colors cursor-pointer p-8 group">
+            <div class="mb-6 flex items-center justify-center w-20 h-20 rounded-full bg-surface-container-high shadow-[0_0_30px_rgba(244,208,63,0.1)] group-hover:scale-110 transition-transform duration-500">
+                <span class="material-symbols-outlined text-4xl text-primary-container">cloud_upload</span>
+            </div>
+            <div class="text-center space-y-2">
+                <p class="text-xl font-headline font-bold tracking-tight text-on-surface">Capture Waste Material</p>
+                <p class="text-sm text-outline font-medium">Drag assets here or tap to launch camera</p>
+            </div>
+            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+                <div class="w-1 h-1 rounded-full bg-primary-container animate-pulse"></div>
+                <div class="w-1 h-1 rounded-full bg-primary-container/40"></div>
+                <div class="w-1 h-1 rounded-full bg-primary-container/40"></div>
+            </div>
+            <input type="file" id="file-input" accept="image/*">
+        </div>
+
+        <!-- Upload Preview (hidden initially) -->
+        <div class="hidden relative" id="upload-preview">
+            <img id="preview-img" src="" alt="Preview" class="w-full max-h-[300px] object-contain rounded-xl border border-outline-variant/20">
+            <button id="remove-btn" class="absolute top-3 right-3 w-8 h-8 bg-error/80 text-white rounded-full flex items-center justify-center hover:bg-error transition-colors text-sm font-bold">✕</button>
+        </div>
+
+        <!-- Location + Classify Button -->
+        <div class="flex gap-3 items-end flex-wrap" id="classify-controls">
+            <div class="flex-1 min-w-[180px]">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">📍 Location (optional)</label>
+                <input type="text" id="location-input" placeholder="e.g. Connaught Place"
+                    class="w-full px-4 py-3 rounded-xl bg-surface-container-lowest border border-outline-variant/20 text-on-surface font-body text-sm focus:border-primary-fixed-dim/40 focus:outline-none transition-colors">
+            </div>
+            <button id="classify-btn" onclick="classifyWaste()" class="px-8 py-3 bg-primary-container text-on-primary-container font-headline font-bold rounded-xl shadow-[0_0_20px_rgba(244,208,63,0.2)] hover:scale-[1.02] active:scale-95 transition-all">
+                🔍 Classify Waste
+            </button>
+        </div>
+
+        <!-- Classification Result (hidden initially) -->
+        <div class="glass-card rounded-xl overflow-hidden hidden" id="result-section">
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <!-- Image Preview -->
+                <div class="relative h-64 md:h-full min-h-[240px]">
+                    <img id="result-image" class="w-full h-full object-cover" src="" alt="Classified waste">
+                    <div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6">
+                        <span class="px-3 py-1 bg-surface-container-highest/60 backdrop-blur-md rounded-full text-[10px] font-bold text-on-surface tracking-widest uppercase">AI Classification</span>
+                    </div>
+                </div>
+                <!-- Result Details -->
+                <div class="p-8 flex flex-col justify-between space-y-6">
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-start">
+                            <div class="space-y-1">
+                                <p class="text-[10px] font-bold tracking-[0.2em] text-outline uppercase">Prediction</p>
+                                <h3 class="text-2xl font-headline font-bold text-tertiary-fixed-dim tracking-tight" id="result-class-name">—</h3>
+                            </div>
+                            <div class="w-12 h-12 rounded-full border-2 border-secondary/20 flex items-center justify-center" id="result-check-icon">
+                                <span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            </div>
+                        </div>
+                        <!-- Confidence -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-end">
+                                <span class="text-sm font-semibold text-on-surface">Confidence Score</span>
+                                <span class="text-xl font-headline font-bold text-primary-container" id="result-conf-val">0%</span>
+                            </div>
+                            <div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                                <div class="h-full bg-primary-container rounded-full shadow-[0_0_10px_rgba(244,208,63,0.5)] transition-all duration-700" id="result-conf-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <!-- Per-class probabilities -->
+                        <div class="space-y-2" id="result-probs"></div>
+                        <!-- Action -->
+                        <div class="flex items-center gap-4 p-4 bg-tertiary-container/10 rounded-lg border border-tertiary-fixed-dim/10">
+                            <span class="material-symbols-outlined text-tertiary-fixed-dim">info</span>
+                            <p class="text-sm font-medium text-tertiary-fixed-dim" id="result-action">—</p>
+                        </div>
+                    </div>
+                    <button class="w-full py-4 bg-primary-container text-on-primary-container font-headline font-bold rounded-xl shadow-[0_0_20px_rgba(244,208,63,0.2)] hover:scale-[1.02] active:scale-95 transition-all" onclick="confirmAndReset()">
+                        Confirm &amp; Record
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Scans on Scan Tab -->
+        <section class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-headline font-bold tracking-tight">Recent Scans</h3>
+                <span class="text-xs font-bold text-primary-container uppercase tracking-widest cursor-pointer" onclick="switchTab('dashboard')">View History</span>
+            </div>
+            <div class="space-y-3" id="scan-recent-list">
+                <div class="text-center py-4 text-on-surface-variant text-sm">No scans yet</div>
+            </div>
+        </section>
+    </main>
+</section>
+
+<!-- ────────────────────────────────────────────
+     TAB 3: MAP (Route Optimization)
+     ──────────────────────────────────────────── -->
+<section class="tab-panel" id="tab-map" style="height: calc(100dvh - 72px - 80px);">
+    <main class="flex-grow relative overflow-hidden bg-surface-container-lowest h-full">
+        <!-- Leaflet Map Container -->
+        <div id="main-map" class="absolute inset-0 w-full h-full z-0"></div>
+
+        <!-- Route Info Overlay -->
+        <div class="absolute top-4 right-4 z-30 w-72 glass-card p-6 rounded-lg" id="route-info-overlay">
+            <div class="flex items-center gap-2 mb-4">
+                <div class="w-2 h-2 bg-secondary rounded-full"></div>
+                <h3 class="font-headline text-lg font-bold tracking-tight text-on-surface" id="route-title">Loading Route...</h3>
+            </div>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-on-surface-variant text-sm">Distance</span>
+                    <span class="font-bold text-on-surface" id="route-distance">—</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-on-surface-variant text-sm">ETA</span>
+                    <span class="font-bold text-on-surface" id="route-eta">—</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-on-surface-variant text-sm">Fuel Saved</span>
+                    <span class="font-bold text-secondary" id="route-fuel">—</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-on-surface-variant text-sm">Bins</span>
+                    <span class="font-bold text-primary-container" id="route-bins-count">—</span>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-outline-variant/20">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-tertiary-fixed-dim">auto_awesome</span>
+                    <span class="text-xs text-tertiary-fixed-dim font-medium uppercase tracking-wider">AI Optimization Active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fleet Command Bottom Panel -->
+        <div class="absolute bottom-24 left-1/2 -translate-x-1/2 z-30 w-[90%] max-w-2xl">
+            <div class="glass-card p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex flex-col">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-[#F4D03F] mb-1">Fleet Command</h4>
+                    <p class="text-sm text-on-surface-variant">Update network or trigger recalibration</p>
+                </div>
+                <div class="flex gap-3 w-full md:w-auto">
+                    <button onclick="mapSimulateTick()" class="flex-1 md:flex-none px-6 py-3 bg-surface-container-highest/50 border border-outline-variant/30 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-surface-container-high transition-colors" id="map-sim-btn">
+                        Simulate IoT Tick
+                    </button>
+                    <button onclick="mapOptimizeRoute()" class="flex-1 md:flex-none px-8 py-3 bg-[#F4D03F] text-[#131313] rounded-full text-xs font-bold uppercase tracking-wider neon-pulse active:scale-95 transition-all" id="map-opt-btn">
+                        Optimize Route
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="absolute top-4 left-4 z-30 glass-card p-3 rounded-lg space-y-2">
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-[#ffb4ab]"></div>
+                <span class="text-[10px] font-bold uppercase tracking-wider">High (&gt;70%)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-[#f4d03f]"></div>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Medium (40-70%)</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-[#4ae183]"></div>
+                <span class="text-[10px] font-bold uppercase tracking-wider">Low (&lt;40%)</span>
+            </div>
+        </div>
+    </main>
+</section>
+
+<!-- ────────────────────────────────────────────
+     TAB 4: SETTINGS / IoT CONTROLS
+     ──────────────────────────────────────────── -->
+<section class="tab-panel" id="tab-settings">
+    <main class="max-w-7xl mx-auto px-6 mt-4 space-y-12 pb-32">
+        <!-- Hero Command Center -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Large Control Card -->
+            <div class="md:col-span-2 glass-card rounded-xl p-8 flex flex-col justify-between min-h-[280px] overflow-hidden relative">
+                <div class="relative z-10">
+                    <h2 class="text-on-surface-variant font-label text-[10px] uppercase tracking-[0.2em] mb-4">Command Center</h2>
+                    <h1 class="font-headline text-5xl md:text-6xl font-bold tracking-tighter text-on-surface leading-tight max-w-md">
+                        Glacier <span class="text-primary-container">IoT</span> Node Control
+                    </h1>
+                </div>
+                <div class="flex flex-wrap gap-4 mt-8 relative z-10">
+                    <button onclick="settingsSimulateTick()" id="settings-sim-btn" class="bg-primary-container text-on-primary-container px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:scale-105 transition-transform neon-glow-green">
+                        <span class="material-symbols-outlined">sensors</span>
+                        Simulate IoT Tick
+                    </button>
+                    <button onclick="settingsOptimizeRoute()" class="bg-surface-variant/50 border border-outline-variant/20 text-on-surface px-8 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-surface-variant transition-colors backdrop-blur-md">
+                        <span class="material-symbols-outlined">route</span>
+                        Optimize Route
+                    </button>
+                    <button onclick="settingsResetBins()" id="settings-reset-btn" class="bg-surface-variant/50 border border-outline-variant/20 text-on-surface px-6 py-4 rounded-xl font-bold flex items-center gap-3 hover:bg-surface-variant transition-colors backdrop-blur-md">
+                        <span class="material-symbols-outlined">refresh</span>
+                        Reset Bins
+                    </button>
+                </div>
+                <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-primary-container/10 rounded-full blur-[100px]"></div>
+            </div>
+
+            <!-- System Health -->
+            <div class="glass-card rounded-xl p-8 flex flex-col justify-between">
+                <div>
+                    <h2 class="text-on-surface-variant font-label text-[10px] uppercase tracking-[0.2em] mb-6">System Health</h2>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-on-surface-variant text-sm">API Uptime</span>
+                                <span class="text-secondary font-bold" id="health-uptime">—</span>
+                            </div>
+                            <div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+                                <div class="h-full bg-secondary transition-all duration-700" id="health-uptime-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-on-surface-variant text-sm">Active Bins</span>
+                                <span class="text-primary-container font-bold" id="health-bins">—</span>
+                            </div>
+                            <div class="w-full h-1 bg-surface-container rounded-full overflow-hidden">
+                                <div class="h-full bg-primary-container transition-all duration-700" id="health-bins-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-outline-variant/10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 bg-secondary rounded-full animate-pulse"></div>
+                        <span class="text-sm font-medium">Real-time processing active</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fleet Overview -->
+        <section>
+            <div class="flex justify-between items-end mb-8">
+                <h3 class="font-headline text-3xl font-bold tracking-tight">Fleet Overview</h3>
+                <span class="text-on-surface-variant text-sm border-b border-outline-variant/30 pb-1" id="fleet-count">View all bins</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="fleet-grid">
+                <div class="text-center py-8 text-on-surface-variant col-span-full">Loading bins...</div>
+            </div>
+        </section>
+    </main>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     BOTTOM NAVIGATION BAR
+     ═══════════════════════════════════════════ -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-[#131313]/60 backdrop-blur-3xl rounded-t-[3rem] shadow-[0_-10px_40px_rgba(0,0,0,0.5)]" id="bottom-nav">
+    <!-- Dashboard -->
+    <a href="#" class="nav-link flex flex-col items-center justify-center bg-[#F4D03F] text-[#131313] rounded-full px-5 py-2 scale-110 shadow-[0_0_15px_rgba(244,208,63,0.3)]" data-tab="dashboard">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+        <span class="font-label text-[10px] font-bold uppercase tracking-widest mt-0.5">Dashboard</span>
+    </a>
+    <!-- Scan -->
+    <a href="#" class="nav-link flex flex-col items-center justify-center text-gray-500 hover:text-[#F4D03F]/70 px-4 py-2" data-tab="scan">
+        <span class="material-symbols-outlined">cloud_upload</span>
+        <span class="font-label text-[10px] font-bold uppercase tracking-widest mt-0.5">Scan</span>
+    </a>
+    <!-- Map -->
+    <a href="#" class="nav-link flex flex-col items-center justify-center text-gray-500 hover:text-[#F4D03F]/70 px-4 py-2" data-tab="map">
+        <span class="material-symbols-outlined">explore</span>
+        <span class="font-label text-[10px] font-bold uppercase tracking-widest mt-0.5">Map</span>
+    </a>
+    <!-- Settings -->
+    <a href="#" class="nav-link flex flex-col items-center justify-center text-gray-500 hover:text-[#F4D03F]/70 px-4 py-2" data-tab="settings">
+        <span class="material-symbols-outlined">settings</span>
+        <span class="font-label text-[10px] font-bold uppercase tracking-widest mt-0.5">Settings</span>
+    </a>
+</nav>
+
+<!-- Application JavaScript -->
+<script src="js/app.js"></script>
+
+</body>
+</html>
